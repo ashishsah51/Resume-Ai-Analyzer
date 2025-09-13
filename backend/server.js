@@ -18,7 +18,7 @@ const PORT = process.env.PORT;            // Define the port the server will lis
 app.use(cors({
   origin: ["https://resume-ai-analyzer-alpha.vercel.app"], // allow frontend domain
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"], // 👈 add Content-Type here
+  allowedHeaders: ["*"], // Allow all headers
 }));                               // Enable Cross-Origin Resource Sharing
 app.use(bodyParser.json());                        // Parse incoming JSON payloads
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data from forms
