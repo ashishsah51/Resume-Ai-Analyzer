@@ -14,16 +14,12 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env'
 const app = express();                             // Create an Express application instance
 const PORT = process.env.PORT;            // Define the port the server will listen on
 
-// Define the path to the uploads folder
-const uploadPath = path.join(__dirname, 'uploads'); // Resolve the full path to "uploads" folder
-
-// Check if the uploads folder exists; if not, create it
-if (!fs.existsSync(uploadPath)) {                  // Check if uploads folder does not exist
-  fs.mkdirSync(uploadPath);                        // Create the uploads folder
-}
-
 // Middleware setup
-app.use(cors());                                   // Enable Cross-Origin Resource Sharing
+app.use(cors({
+  origin: ["https://resume-ai-analyzer-alpha.vercel.app"], // allow frontend domain
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"], // 👈 add Content-Type here
+}));                               // Enable Cross-Origin Resource Sharing
 app.use(bodyParser.json());                        // Parse incoming JSON payloads
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data from forms
 
@@ -31,10 +27,6 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data fr
 app.use('/api/analyze', analyzeRoute);             // Mount the analyze route on '/api/analyze'
 app.use('/api/enhance', enhanceRoute);
 app.use("/api/stats", statsRoutes);
-
-
-// Export as a Firebase Function
-// exports.api = functions.https.onRequest(app);
 
 // Start the server
 app.listen(PORT, () => {                           // Start listening on the defined port
