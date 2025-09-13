@@ -28,7 +28,7 @@ const Home = () => {
 
     async function incrementVisit() {
       try {
-        await axios.post("http://localhost:5000/api/stats/increment/visit");
+        await axios.post(`${process.env.VITE_API_BASE_URL}/stats/increment/visit`);
       } catch (err) {
         console.error(err);
       }
@@ -69,7 +69,7 @@ const Home = () => {
   ];
 
   const getCounters = async () => {
-    const res = await fetch("http://localhost:5000/api/stats");
+    const res = await fetch(`${process.env.VITE_API_BASE_URL}/stats`);
     const data = await res.json();
     if (!res.ok) throw new Error("Failed to fetch counters");
     return data;

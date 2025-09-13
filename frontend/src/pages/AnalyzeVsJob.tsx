@@ -72,9 +72,8 @@ const AnalyzeVsJob = () => {
 
     // Make API Call
     try {
-      // const response = await axios.post("http://localhost:5000/api/analyze", formData);
       const resumeTxt = await extractText(resumeFile);
-      const response = await axios.post("http://localhost:5000/api/analyze", {
+      const response = await axios.post(`${process.env.VITE_API_BASE_URL}/analyze`, {
                           resumeText: resumeTxt,
                           jdText: jobDescription,
                           resumeVsJJob: 'true'
@@ -82,7 +81,7 @@ const AnalyzeVsJob = () => {
                           headers: { "Content-Type": "application/json" }
                         });
       setResult(response.data);
-      await axios.post("http://localhost:5000/api/stats/increment/analyze");
+      await axios.post(`${process.env.VITE_API_BASE_URL}/stats/increment/analyze`);
     } catch (error) {
       console.error("Server Error:", error);
       alert("❌ Failed to analyze resume. Please try again.");
@@ -121,7 +120,7 @@ const AnalyzeVsJob = () => {
     // Make API Call
     try {
       const resumeTxt = await extractText(resumeFile);
-      const response = await axios.post("http://localhost:5000/api/enhance", {
+      const response = await axios.post(`${process.env.VITE_API_BASE_URL}/enhance`, {
                           resumeText: resumeTxt,
                           sugText: resumeText
                         }, {
@@ -143,7 +142,7 @@ const AnalyzeVsJob = () => {
       }
       win.document.write(resumeHTML);
       win.document.close();
-      await axios.post("http://localhost:5000/api/stats/increment/enhance");
+      await axios.post(`${process.env.VITE_API_BASE_URL}/stats/increment/enhance`);
     } catch (error) {
       console.error("Server Error:", error);
       alert("❌ Failed to analyze resume. Please try again.");

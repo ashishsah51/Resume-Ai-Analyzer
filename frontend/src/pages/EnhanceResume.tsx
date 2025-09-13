@@ -57,7 +57,7 @@ const EnhanceResume = () => {
     // Make API Call
     try {
       const sugText = await extractText(resumeFile);
-      const response = await axios.post("http://localhost:5000/api/enhance", {
+      const response = await axios.post(`${process.env.VITE_API_BASE_URL}/enhance`, {
         resumeText: sugText,
         sugText: suggestionText
       }, {
@@ -70,7 +70,7 @@ const EnhanceResume = () => {
       setSuggestions(typeof tmp === "string"
                       ? tmp.split("\n").map(s => s.replace(/^- /, "").trim())
                       : Array.isArray(tmp) ? tmp : []);
-      await axios.post("http://localhost:5000/api/stats/increment/analyze");
+      await axios.post(`${process.env.VITE_API_BASE_URL}/stats/increment/analyze`);
     } catch (error) {
       console.error("Server Error:", error);
       alert("❌ Failed to analyze resume. Please try again.");
@@ -92,7 +92,7 @@ const EnhanceResume = () => {
       customSections: enhancedResume.structuredData.customSections
     });
     try {
-      await axios.post("http://localhost:5000/api/stats/increment/enhance");
+      await axios.post(`${process.env.VITE_API_BASE_URL}/stats/increment/enhance`);
     } catch (err) {
       console.error(err);
     }

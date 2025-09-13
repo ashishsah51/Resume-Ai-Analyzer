@@ -185,7 +185,7 @@ const BuildResume = () => {
     });
 
     try {
-      await axios.post("http://localhost:5000/api/stats/increment/build");
+      await axios.post(`${process.env.VITE_API_BASE_URL}/stats/increment/build`);
     } catch (err) {
       console.error(err);
     }
