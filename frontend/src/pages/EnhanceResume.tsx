@@ -6,11 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, FileText, Sparkles, Download, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { renderResumeText, generateResume } from "../components/generate"
+import { extractText } from "../components/ResumeTextParser";
 import axios from "axios";
 
 const EnhanceResume = () => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [resumeText, setResumeText] = useState("");
+  const [suggestionText, setSuggestionText] = useState("");
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [enhancedText, setEnhancedText] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -18,9 +19,7 @@ const EnhanceResume = () => {
   const [enhancedResume, setEnhancedResume] = useState(null); 
 
   useEffect(() => {
-    if (enhancedText !== null) {
-      console.log('enhancedResume updated');
-    }
+    if (enhancedText !== null) {}
   }, [enhancedText]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +43,7 @@ const EnhanceResume = () => {
   };
 
   const handleEnhance = async () => {
-    if (!resumeFile && !resumeText.trim()) {
+    if (!resumeFile && !suggestionText.trim()) {
       toast({
         title: "Missing resume",
         description: "Please upload a resume file or paste resume text",
@@ -54,17 +53,23 @@ const EnhanceResume = () => {
     }
 
     setIsEnhancing(true);
-    const formData = new FormData();
-    formData.append("resumeFile", resumeFile);
-    formData.append("sugText", resumeText);
 
     // Make API Call
     try {
-      const response = await axios.post("http://localhost:5000/api/enhance", formData);
+      const sugText = await extractText(resumeFile);
+      const response = await axios.post("http://localhost:5000/api/enhance", {
+        resumeText: sugText,
+        sugText: suggestionText
+      }, {
+        headers: { "Content-Type": "application/json" }
+      });
       const resumeTxt = renderResumeText(response.data.structuredData);
       setEnhancedResume(response.data);
       setEnhancedText(resumeTxt);
-      setSuggestions(response.data.structuredData.mockSuggestion);
+      const tmp = response.data.structuredData.mockSuggestion;
+      setSuggestions(typeof tmp === "string"
+                      ? tmp.split("\n").map(s => s.replace(/^- /, "").trim())
+                      : Array.isArray(tmp) ? tmp : []);
       await axios.post("http://localhost:5000/api/stats/increment/analyze");
     } catch (error) {
       console.error("Server Error:", error);
@@ -163,8 +168,8 @@ const EnhanceResume = () => {
                   <TabsContent value="text" className="space-y-4">
                     <Textarea
                       placeholder="Paste your resume text here..."
-                      value={resumeText}
-                      onChange={(e) => setResumeText(e.target.value)}
+                      value={suggestionText}
+                      onChange={(e) => setSuggestionText(e.target.value)}
                       className="min-h-[300px] resize-none"
                     />
                   </TabsContent>
@@ -174,7 +179,7 @@ const EnhanceResume = () => {
                   variant="gradient"
                   size="lg"
                   onClick={handleEnhance}
-                  disabled={isEnhancing || (!resumeFile && !resumeText.trim())}
+                  disabled={isEnhancing || (!resumeFile && !suggestionText.trim())}
                   className="w-full mt-6"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
@@ -194,7 +199,7 @@ const EnhanceResume = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {suggestions.map((suggestion, index) => (
+                    {Array.isArray(suggestions) && suggestions.map((suggestion, index) => (
                       <li key={index} className="flex items-start space-x-3">
                         <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold mt-0.5">
                           {index + 1}

@@ -18,10 +18,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           name: firebaseUser.displayName,
           email: firebaseUser.email,
         });
-        setLoading(false);
       } else {
         setUser(null);
       }
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);

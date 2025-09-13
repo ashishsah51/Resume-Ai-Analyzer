@@ -10,34 +10,9 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') }
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY); // Set this in your environment
 
 /**
- * Extracts plain text from uploaded resume file.
- * This function does not need any changes.
- */
-async function extractTextFromResume(buffer, filename) {
-  const ext = path.extname(filename).toLowerCase();
-
-  if (ext === '.pdf') {
-    const pdfData = await pdfParse(buffer);
-    return pdfData.text;
-  }
-
-  if (ext === '.docx') {
-    const docResult = await mammoth.extractRawText({ buffer });
-    return docResult.value;
-  }
-
-  if (ext === '.txt') {
-    return buffer.toString('utf8');
-  }
-
-  return '';
-}
-
-/**
  * Calls Gemini to analyze resume vs job description
  */
-async function analyzeResumeWithOpenAI(buffer, filename, jobDescription, resumeVsJob) {
-  const resumeText = await extractTextFromResume(buffer, filename);
+async function analyzeResumeWithOpenAI(resumeText, jobDescription, resumeVsJob) {
   let prompt;
   if(!resumeVsJob) {
     prompt = atsScorePrompt(resumeText);

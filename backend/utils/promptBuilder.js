@@ -1,21 +1,3 @@
-// File: utils/promptBuilder.js
-function buildPrompt1(resumeText, jobDescription) {
-    return `
-  You are a resume improvement assistant.
-  
-  Given the following resume content:
-  
-  ${resumeText}
-  
-  And this job description (optional):
-  
-  ${jobDescription || "N/A"}
-  
-  Rewrite the resume with enhanced language, alignment to the job, and professional formatting. 
-  Return the full updated resume content.
-    `;
-  }
-
 function atsScorePrompt(resumeText) {
   const currentDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',

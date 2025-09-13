@@ -17,21 +17,12 @@ const pdf = require("pdf-parse");
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 // const upload = multer({ dest: "uploads/" });
-const storage = multer.memoryStorage(); // ✅ keep in memory
-const upload = multer({ storage });
 
 
-router.post("/", upload.single("resumeFile"), async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    let resumeText = req.body.text || "";
-    let suggestionText = req.body.jdText || ""
-    let filePath;
-
-    if (req.file) {
-      filePath = path.join(__dirname, "../uploads", req.file.filename);
-      resumeText = await extractTextFromPdf(filePath);
-      fs.unlinkSync(filePath);
-    }
+    let resumeText = req.body.resumeText || "";
+    let suggestionText = req.body.jdText || "";
 
     if (!resumeText.trim()) {
       return res.status(400).json({ error: "No resume content provided" });
@@ -42,17 +33,10 @@ router.post("/", upload.single("resumeFile"), async (req, res) => {
       structuredData: enhancedResume.data,
     });
   } catch (error) {
-    fs.unlinkSync(filePath);
     console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
-
-async function extractTextFromPdf(filePath) {
-  const dataBuffer = fs.readFileSync(filePath);
-  const data = await pdf(dataBuffer);
-  return data.text;
-}
 
 async function extractResumeData(resumeText, suggestionText) {
   const model = genAI.getGenerativeModel({

@@ -8,6 +8,7 @@ import axios from "axios";
 import { generateResume } from "../components/generate"
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import { extractText } from "../components/ResumeTextParser";
 
 interface ResumeAnalysis {
   overallScore: number;
@@ -72,7 +73,14 @@ const ResumeScore = () => {
 
     // Make API Call
     try {
-      const response = await axios.post("http://localhost:5000/api/analyze", formData);
+      const resumeTxt = await extractText(resumeFile);
+      const response = await axios.post("http://localhost:5000/api/analyze", {
+                          resumeText: resumeTxt,
+                          jdText: '',
+                          resumeVsJJob: 'false'
+                        }, {
+                          headers: { "Content-Type": "application/json" }
+                        });
       setAnalysis(response.data);
     } catch (error) {
       console.error("Server Error:", error);
@@ -113,7 +121,13 @@ const ResumeScore = () => {
 
     // Make API Call
     try {
-      const response = await axios.post("http://localhost:5000/api/enhance", formData);
+      const resumeTxt = await extractText(resumeFile);
+      const response = await axios.post("http://localhost:5000/api/enhance", {
+                          resumeText: resumeTxt,
+                          sugText: resumeText
+                        }, {
+                          headers: { "Content-Type": "application/json" }
+                        });
       const resumeHTML = generateResume({
         personalInfo: response.data.structuredData.personalInfo,
         experiences: response.data.structuredData.experiences,

@@ -9,6 +9,7 @@ import { Upload, FileText, BarChart3, CheckCircle, XCircle, Lightbulb } from "lu
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { generateResume } from "../components/generate"
+import { extractText } from "../components/ResumeTextParser";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -71,7 +72,15 @@ const AnalyzeVsJob = () => {
 
     // Make API Call
     try {
-      const response = await axios.post("http://localhost:5000/api/analyze", formData);
+      // const response = await axios.post("http://localhost:5000/api/analyze", formData);
+      const resumeTxt = await extractText(resumeFile);
+      const response = await axios.post("http://localhost:5000/api/analyze", {
+                          resumeText: resumeTxt,
+                          jdText: jobDescription,
+                          resumeVsJJob: 'true'
+                        }, {
+                          headers: { "Content-Type": "application/json" }
+                        });
       setResult(response.data);
       await axios.post("http://localhost:5000/api/stats/increment/analyze");
     } catch (error) {
@@ -108,13 +117,16 @@ const AnalyzeVsJob = () => {
                         .join(", "); // Join them into a single string
 
     setIsEnhancing(true);
-    const formData = new FormData();
-    formData.append("resumeFile", resumeFile);
-    formData.append("sugText", resumeText);
 
     // Make API Call
     try {
-      const response = await axios.post("http://localhost:5000/api/enhance", formData);
+      const resumeTxt = await extractText(resumeFile);
+      const response = await axios.post("http://localhost:5000/api/enhance", {
+                          resumeText: resumeTxt,
+                          sugText: resumeText
+                        }, {
+                          headers: { "Content-Type": "application/json" }
+                        });
       const resumeHTML = generateResume({
         personalInfo: response.data.structuredData.personalInfo,
         experiences: response.data.structuredData.experiences,
@@ -133,7 +145,6 @@ const AnalyzeVsJob = () => {
       win.document.close();
       await axios.post("http://localhost:5000/api/stats/increment/enhance");
     } catch (error) {
-      console.log(error.message);
       console.error("Server Error:", error);
       alert("❌ Failed to analyze resume. Please try again.");
     } finally {
