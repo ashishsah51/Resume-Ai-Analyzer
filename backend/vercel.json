@@ -1,21 +1,19 @@
 {
-    "builds": [
-      {
-        "src": "./server.js",
-        "use": "@vercel/node"
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js",
+      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
       }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "./server.js",
-        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
-        "headers": {
-            "Access-Control-Allow-Origin": "*"
-        },
-        "status": 200
-      }
-    ]
+    }
+  ]
 }
-
-  
