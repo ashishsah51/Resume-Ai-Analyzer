@@ -74,7 +74,7 @@ const ResumeScore = () => {
     // Make API Call
     try {
       const resumeTxt = await extractText(resumeFile);
-      const response = await axios.post("http://localhost:5000/api/analyze", {
+      const response = await axios.post(`${process.env.VITE_API_BASE_URL}/analyze`, {
                           resumeText: resumeTxt,
                           jdText: '',
                           resumeVsJJob: 'false'
@@ -122,7 +122,7 @@ const ResumeScore = () => {
     // Make API Call
     try {
       const resumeTxt = await extractText(resumeFile);
-      const response = await axios.post("http://localhost:5000/api/enhance", {
+      const response = await axios.post(`${process.env.VITE_API_BASE_URL}/enhance`, {
                           resumeText: resumeTxt,
                           sugText: resumeText
                         }, {
