@@ -12,7 +12,7 @@ const PORT = process.env.PORT;
 // Middleware setup
 // app.use(cors({ origin: true, credentials : true })); // Allow all origins for simplicity; adjust in production
 app.use(cors({
-  origin: 'http://localhost:8080',
+  origin: ['http://localhost:8080', 'https://resume-ai-analyzer-alpha.vercel.app/'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -26,6 +26,6 @@ app.use("/api/stats", statsRoutes);
 
 
 // Start the server
-app.listen(PORT, () => {                           
-  console.log(`✅ Backend server running at http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {                           
+//   console.log(`✅ Backend server running at http://localhost:${PORT}`);
+// });
