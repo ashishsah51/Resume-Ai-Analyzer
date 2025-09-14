@@ -10,7 +10,12 @@ const app = express();
 const PORT = process.env.PORT;
 
 // Middleware setup
-app.use(cors({ origin: true, credentials : true })); // Allow all origins for simplicity; adjust in production
+// app.use(cors({ origin: true, credentials : true })); // Allow all origins for simplicity; adjust in production
+app.use(cors({
+  origin: ["http://localhost:8080", "https://resume-ai-analyzer-alpha.vercel.app"], 
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
