@@ -12,7 +12,7 @@ const PORT = process.env.PORT;
 // Middleware setup
 // app.use(cors({ origin: true, credentials : true })); // Allow all origins for simplicity; adjust in production
 app.use(cors({
-  origin: 'http://localhost:8080',
+  origin: 'https://localhost:8080',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
