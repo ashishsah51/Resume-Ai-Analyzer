@@ -1,14 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const { analyzeResumeWithOpenAI } = require('../services/openaiAnalyzer'); // custom OpenAI logic
 
 
 // Route: POST /api/analyze
 router.post('/', async (req, res) => {
-  let filePath;
   try {
     const jdText = req.body.jdText || ''
     const resumeVsJob = req.body.resumeVsJJob === 'true';

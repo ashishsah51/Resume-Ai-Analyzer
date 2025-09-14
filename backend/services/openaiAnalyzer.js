@@ -1,13 +1,10 @@
 // Import the new Google Generative AI SDK
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require('@google/generative-ai');
-const pdfParse = require('pdf-parse');
-const mammoth = require('mammoth');
-const path = require('path');
 const { analyzePrompt, enhanceResumePrompt, atsScorePrompt } = require('../utils/promptBuilder');
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 
 // Configure Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY); // Set this in your environment
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
 /**
  * Calls Gemini to analyze resume vs job description

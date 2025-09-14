@@ -1,23 +1,14 @@
-// routes/resumeRoutes.js
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const { enhanceResumePrompt } = require('../utils/promptBuilder');
-
-
 const {
   GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
 } = require("@google/generative-ai");
-const pdf = require("pdf-parse");
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
-// const upload = multer({ dest: "uploads/" });
-
 
 router.post("/", async (req, res) => {
   try {
